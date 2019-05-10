@@ -1,0 +1,46 @@
+plugins {
+	id 'org.asciidoctor.convert' version '1.5.3'
+	id 'org.springframework.boot' version '2.2.0.BUILD-SNAPSHOT'
+	id 'java'
+}
+
+apply plugin: 'io.spring.dependency-management'
+
+group = 'com.carlos'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+repositories {
+	mavenCentral()
+	maven { url 'https://repo.spring.io/snapshot' }
+	maven { url 'https://repo.spring.io/milestone' }
+}
+
+ext {
+	set('snippetsDir', file('build/generated-snippets'))
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-web-services'
+	//utilidades
+	compile group: 'com.google.collections', name: 'google-collections', version: '1.0'
+	compile 'org.modelmapper:modelmapper:2.3.3'
+	compile 'io.jsonwebtoken:jjwt:0.9.1'
+	compile 'com.google.code.gson:gson:2.8.5'
+	//base dedatos
+	runtimeOnly 'org.postgresql:postgresql'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+	testImplementation 'org.springframework.security:spring-security-test'
+}
+
+test {
+	outputs.dir snippetsDir
+}
+
+asciidoctor {
+	inputs.dir snippetsDir
+	dependsOn test
+}
